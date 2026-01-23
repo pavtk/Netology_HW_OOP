@@ -1,5 +1,5 @@
-from random import randint
 from typing import List
+
 
 class CourseMemberWithGrades:
     def __init__(self):
@@ -53,16 +53,16 @@ class Student(CourseMemberWithGrades):
         self.courses_in_progress = []
         self.grades = {}
 
-    def rate_lecture(self, lecturer, course, grade):
+    def rate_lecture(self, lecturer, course, grades):
         if (
                 isinstance(lecturer, Lecturer)
                 and course in self.courses_in_progress
                 and course in lecturer.courses_attached
         ):
             if course in lecturer.grades:
-                lecturer.grades[course] += [grade]
+                lecturer.grades[course] += [grades]
             else:
-                lecturer.grades[course] = [grade]
+                lecturer.grades[course] = [grades]
         else:
             return 'Ошибка'
 
@@ -87,7 +87,6 @@ class Lecturer(Mentor, CourseMemberWithGrades):
     def __init__(self, name, surname):
         super().__init__(name, surname)
         self.grades = {}
-
 
     def __str__(self):
         return (
@@ -176,33 +175,43 @@ reviewer.rate_hw(student_one, 'C++', 5)
 print(student)
 print(student_one)
 
-students = [
-    Student("Алексей", "Иванов", "мужской"),
-    Student("Мария", "Петрова", "женский"),
-    Student("Дмитрий", "Сидоров", "мужской"),
-    Student("Анна", "Кузнецова", "женский"),
-    Student("Иван", "Смирнов", "мужской"),
-    Student("Елена", "Васильева", "женский"),
-    Student("Сергей", "Попов", "мужской"),
-    Student("Ольга", "Новикова", "женский"),
-    Student("Андрей", "Федоров", "мужской"),
-    Student("Наталья", "Морозова", "женский")
-]
-
-all_courses = ["Python", "C++", "Git"]
-for student in students:
-    student.courses_in_progress += all_courses
-for student in students:
-    reviewer.rate_hw(student, all_courses[0], randint(1, 10))
-
-print(get_average_garde(students, all_courses[0]))
-all_lecturers = [lecturer]
-print(get_average_garde(all_lecturers, all_courses[0]))
-student.grades['Git'] = [10, 9, 8, 10, 10, 10, 10, 10, 10, 10, 10]
-print(student.grades)
-print(student)
-print(student_one)
-print(student < student_one)
-
 print(lecturer > lecturer)
 print(lecturer != lecturer)
+python_student = Student('Олег', 'Олегов', 'мужской')
+java_student = Student('Ольга', 'Ольгова', 'женский')
+python_student.courses_in_progress += ['Python']
+python_student.finished_courses += ['Java']
+java_student.courses_in_progress += ['Java']
+java_student.finished_courses += ['Python']
+
+python_lecturer = Lecturer('Иван', 'Иванов')
+java_lecturer = Lecturer('Пётр', 'Петров')
+python_lecturer.courses_attached += ['Python']
+java_lecturer.courses_attached += ['Java']
+python_reviewer = Reviewer('Фёдор', 'Фёдоров')
+java_reviewer = Reviewer('Александр', 'Александров')
+python_reviewer.courses_attached += ['Python']
+java_reviewer.courses_attached += ['Java']
+print(python_student.rate_lecture(python_lecturer, 'Python', 8))
+print(python_student.rate_lecture(python_lecturer, 'Python', 5))
+print(python_student.rate_lecture(java_lecturer, 'Python', 9))
+print(java_student.rate_lecture(java_lecturer, 'Java', 7))
+print(java_student.rate_lecture(java_lecturer, 'Java', 9))
+print(python_reviewer.rate_hw(python_student, 'Python', 7))
+print(python_reviewer.rate_hw(python_student, 'Python', 4))
+print(python_reviewer.rate_hw(java_student, 'Python', 8))
+print(java_reviewer.rate_hw(java_student, 'Java', 7))
+print(java_reviewer.rate_hw(java_student, 'Java', 6))
+print(python_student)
+print(java_student)
+print(python_student > java_student)
+print(python_student < java_student)
+print(python_student == java_student)
+
+print(python_lecturer)
+print(java_lecturer)
+print(java_lecturer > python_lecturer)
+print(java_lecturer < python_lecturer)
+print(java_lecturer == python_lecturer)
+print(get_average_garde([python_student, java_student], 'Python'))
+print(get_average_garde([python_lecturer, java_lecturer], 'Python'))
