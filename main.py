@@ -1,10 +1,8 @@
 from random import randint
 from typing import List
 
-class BaseCourseMember:
-    def __init__(self, name, surname):
-        self.name = name
-        self.surname = surname
+class CourseMemberWithGrades:
+    def __init__(self):
         self.grades = {}
 
     @staticmethod
@@ -45,9 +43,11 @@ class BaseCourseMember:
             return False
 
 
-class Student(BaseCourseMember):
+class Student(CourseMemberWithGrades):
     def __init__(self, name, surname, gender):
-        super().__init__(name, surname)
+        super().__init__()
+        self.name = name
+        self.surname = surname
         self.gender = gender
         self.finished_courses = []
         self.courses_in_progress = []
@@ -76,13 +76,14 @@ class Student(BaseCourseMember):
         )
 
 
-class Mentor(BaseCourseMember):
+class Mentor():
     def __init__(self, name, surname):
-        super().__init__(name, surname)
+        self.name = name
+        self.surname = surname
         self.courses_attached = []
 
 
-class Lecturer(Mentor):
+class Lecturer(Mentor, CourseMemberWithGrades):
     def __init__(self, name, surname):
         super().__init__(name, surname)
         self.grades = {}
