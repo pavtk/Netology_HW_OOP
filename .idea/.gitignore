@@ -4,5 +4,5 @@
 # Environment-dependent path to Maven home directory
 /mavenHomeManager.xml
 /.gigaide/*
-untitled.iml
+/untitled.iml
 .idea/misc.xml .idea/modules.xml .idea/vcs.xml .idea/workspace.xml
