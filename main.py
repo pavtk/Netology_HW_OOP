@@ -113,7 +113,7 @@ class Reviewer(Mentor):
         )
 
 
-def get_average_garde(course_members: List[Student | Lecturer], course: str):
+def get_average_grade(course_members: List[Student | Lecturer], course: str):
     all_grades = []
     for member in course_members:
         if not isinstance(member, Student) and not isinstance(member, Lecturer):
@@ -213,5 +213,5 @@ print(java_lecturer)
 print(java_lecturer > python_lecturer)
 print(java_lecturer < python_lecturer)
 print(java_lecturer == python_lecturer)
-print(get_average_garde([python_student, java_student], 'Python'))
-print(get_average_garde([python_lecturer, java_lecturer], 'Python'))
+print(get_average_grade([python_student, java_student], 'Python'))
+print(get_average_grade([python_lecturer, java_lecturer], 'Python'))
