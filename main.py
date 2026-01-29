@@ -14,33 +14,24 @@ class CourseMemberWithGrades:
             return 0
         return sum(all_grades) / len(all_grades)
 
-    @classmethod
-    def check_isinstance(cls, obj):
-        if isinstance(obj, cls):
-            return True
-        else:
-            raise TypeError(f'Error object type is not {cls.__name__}')
-
     def __eq__(self, other):
-        self.check_isinstance(other)
-        if (self.average_grade(self.grades) == other.average_grade(other.grades)):
-            return True
-        else:
-            return False
+        return (
+            self.average_grade(self.grades) == other.average_grade(other.grades)
+            if isinstance(self, type(other)) else NotImplemented
+        )
 
     def __lt__(self, other):
-        self.check_isinstance(other)
-        if self.average_grade(self.grades) < other.average_grade(other.grades):
-            return True
-        else:
-            return False
+        return (
+            self.average_grade(self.grades) < other.average_grade(other.grades)
+            if isinstance(self, type(other)) else NotImplemented
+        )
+
 
     def __gt__(self, other):
-        self.check_isinstance(other)
-        if (self.average_grade(self.grades) > other.average_grade(other.grades)):
-            return True
-        else:
-            return False
+        return (
+            self.average_grade(self.grades) > other.average_grade(other.grades)
+            if isinstance(self, type(other)) else NotImplemented
+        )
 
 
 class Student(CourseMemberWithGrades):
@@ -51,7 +42,6 @@ class Student(CourseMemberWithGrades):
         self.gender = gender
         self.finished_courses = []
         self.courses_in_progress = []
-        self.grades = {}
 
     def rate_lecture(self, lecturer, course, grades):
         if (
@@ -85,8 +75,8 @@ class Mentor():
 
 class Lecturer(Mentor, CourseMemberWithGrades):
     def __init__(self, name, surname):
+        CourseMemberWithGrades.__init__(self)
         super().__init__(name, surname)
-        self.grades = {}
 
     def __str__(self):
         return (
@@ -212,6 +202,8 @@ print(python_lecturer)
 print(java_lecturer)
 print(java_lecturer > python_lecturer)
 print(java_lecturer < python_lecturer)
-print(java_lecturer == python_lecturer)
+print(java_lecturer == java_lecturer)
+print(java_lecturer == 5)
 print(get_average_grade([python_student, java_student], 'Python'))
 print(get_average_grade([python_lecturer, java_lecturer], 'Python'))
+
