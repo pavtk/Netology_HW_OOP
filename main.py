@@ -43,16 +43,17 @@ class Student(CourseMemberWithGrades):
         self.finished_courses = []
         self.courses_in_progress = []
 
-    def rate_lecture(self, lecturer, course, grades):
+    def rate_lecture(self, lecturer, course, grade):
         if (
                 isinstance(lecturer, Lecturer)
                 and course in self.courses_in_progress
                 and course in lecturer.courses_attached
+                and grade in range(1, 11)
         ):
             if course in lecturer.grades:
-                lecturer.grades[course] += [grades]
+                lecturer.grades[course] += [grade]
             else:
-                lecturer.grades[course] = [grades]
+                lecturer.grades[course] = [grade]
         else:
             return 'Ошибка'
 
@@ -88,7 +89,12 @@ class Lecturer(Mentor, CourseMemberWithGrades):
 
 class Reviewer(Mentor):
     def rate_hw(self, student, course, grade):
-        if isinstance(student, Student) and course in self.courses_attached and course in student.courses_in_progress:
+        if (
+                isinstance(student, Student)
+                and course in self.courses_attached
+                and course in student.courses_in_progress
+                and grade in range(1, 11)
+        ):
             if course in student.grades:
                 student.grades[course] += [grade]
             else:
@@ -105,28 +111,23 @@ class Reviewer(Mentor):
 
 def get_average_grade(course_members: List[Student | Lecturer], course: str):
     all_grades = []
+    total_len = 0
+    if len(course_members) == 0:
+        return 0
     for member in course_members:
         if not isinstance(member, Student) and not isinstance(member, Lecturer):
             raise TypeError('Error object type is not Student or Lecturer')
-    if len(course_members) == 0:
-        return 0
     if type(course_members[0]) == Student:
-        all_grades = (
-            [
-                sum(grades) / len(grades)
-                for student in course_members if course in student.courses_in_progress and
-                len(grades := student.grades.get(course)) > 0
-            ]
-        )
+        for student in course_members:
+            if course in student.courses_in_progress:
+                all_grades += student.grades.get(course)
+                total_len += len(student.grades.get(course))
     elif type(course_members[0]) == Lecturer:
-        all_grades = (
-            [
-                sum(grades) / len(grades)
-                for lecturer in course_members if course in lecturer.courses_attached and
-                len(grades := lecturer.grades.get(course)) > 0
-            ]
-        )
-    return sum(all_grades) / len(all_grades)
+        for lecturer in course_members:
+            if course in lecturer.courses_attached:
+                all_grades += lecturer.grades.get(course)
+                total_len += len(lecturer.grades.get(course))
+    return sum(all_grades) / total_len
 
 
 lecturer = Lecturer('Иван', 'Иванов')
